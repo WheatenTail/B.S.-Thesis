@@ -31,7 +31,7 @@ rename_dict = {"Material Composition": "formula",
 
 df = df.rename(columns=rename_dict)
 
-# splitting with sklearn randomly (might work since there are only unique formulas)
+# splitting with sklearn randomly might work since there are only unique formulas
 X = df[['formula']]
 y = df['Ehull']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=t_size, random_state=random_seed)
