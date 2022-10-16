@@ -15,8 +15,8 @@ t_size = 0.2
 #train_size = 1 - val_size - test_size
 
 # get the data from file
-PATH = os.getcwd()
-data_path = os.path.join(PATH, '/Users/carlc/OneDrive/Desktop/B.S.-Thesis/perovskite_data.xlsx')
+directory = os.getcwd()
+data_path = directory + '/perovskite_data.xlsx'
 df = pd.read_excel(data_path, sheet_name="DFT Calculated Dataset")
 
 
@@ -68,8 +68,8 @@ df_train = df[df["formula"].str.contains(test_element)==False]
 
 
 # uncomment to save data again
-#train_path = os.path.join(PATH, '/Users/carlc/OneDrive/Desktop/B.S.-Thesis/train_data.csv')
-#test_path = os.path.join(PATH, '/Users/carlc/OneDrive/Desktop/B.S.-Thesis/test_data.csv')
+#train_path = directory + 'train_data.csv'
+#test_path = directory + 'test_data.csv'
 #df_train.to_csv(train_path, index=False)
 #df_test.to_csv(test_path, index=False)
 
