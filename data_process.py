@@ -36,6 +36,11 @@ X = df[['formula']]
 y = df['Ehull']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=t_size, random_state=random_seed)
 
+#print("input\n")
+#print(X_train.head(10))
+#print("\noutput\n")
+#print(y_train.head(10))
+
 num_unique_formulae = len(X_train["formula"].unique())
 
 
