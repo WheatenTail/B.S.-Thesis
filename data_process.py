@@ -1,16 +1,17 @@
-from cgi import test
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+from sklearn.model_selection import train_test_split
 from pandas_profiling import ProfileReport
 
+
 # random seed to reproduce results
-#random_seed = 458
+random_seed = 458
 #np.random.seed(seed=random_seed)
 
 #val_size = 0.2
-#test_size = 0.1
+t_size = 0.2
 #train_size = 1 - val_size - test_size
 
 # get the data from file
@@ -29,6 +30,14 @@ rename_dict = {"Material Composition": "formula",
                "formation_energy (eV/atom)": "Eform"}
 
 df = df.rename(columns=rename_dict)
+
+# splitting with sklearn randomly (might work since there are only unique formulas)
+X = df[['formula']]
+y = df['Ehull']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=t_size, random_state=random_seed)
+
+num_unique_formulae = len(X_train["formula"].unique())
+
 
 # data is already checkd manually for weird things with the profile
 #profile = ProfileReport(df, title="data profile")
