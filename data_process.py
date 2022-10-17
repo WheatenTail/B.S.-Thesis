@@ -26,23 +26,60 @@ rename_dict = {"Material Composition": "formula",
                "A site #2": "A2",
                "A site #3": "A3",
                "B site #1": "B1",
+               "B site #2": "B2",
+               "B site #3": "B3",
                "energy_above_hull (meV/atom)": "Ehull",
                "formation_energy (eV/atom)": "Eform"}
 
 df = df.rename(columns=rename_dict)
 
+""" Splitting data how they did in the paper """
+
+first = ["Ba", "Ca"]
+
+second = ["Pr", "Dy", "Gd", "Ho"]
+
+thirdA = ["Ba", "Sr"]
+thirdB = ["Fe"]
+
+fourth = ["V", "Cr", "Ti", "Ga", "Sc"]
+
+fifth = ["Bi", "Cd", "Mg", "Ce", "Er"]
+
+
+df_test1 = df[df["A1"].isin(first)]
+df_test1 = df_test1[df_test1["A2"].isin(first)]
+
+df_test2 = df[df["A1"].isin(second)]
+df_test2 = df_test2[df_test2["A2"].isin(second)]
+
+df_test3A = df[df["B1"].isin(thirdB)]
+df_test3B = df[df["B2"].isin(thirdB)]
+df_test3C = df[df["B3"].isin(thirdB)]
+df_test3 = pd.concat([df_test3A, df_test3B, df_test3C])
+df_test3 = df_test3[df_test3["A1"].isin(thirdA)]
+df_test3 = df_test3[df_test3["A2"].isin(thirdA)]
+
+df_test4 = df[df["B1"].isin(fourth)]
+df_test4 = df_test4[df_test4["B2"].isin(fourth)]
+
+df_test5 = df[df["A1"].isin(fifth)]
+df_test5 = df[df["A2"].isin(fifth)]
+df_test5 = df[df["A3"].isin(fifth)]
+
+
+df_train5 = df[df["formula"].isin(df_test5["formula"])==False]
+
+""" Splitting the data randomly """
 # splitting with sklearn randomly might work since there are only unique formulas
-X = df[['formula']]
-y = df['Ehull']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=t_size, random_state=random_seed)
+#X = df[['formula']]
+#y = df['Ehull']
+#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=t_size, random_state=random_seed)
 
 #print("input\n")
 #print(X_train.head(10))
 #print("\noutput\n")
 #print(y_train.head(10))
-
-num_unique_formulae = len(X_train["formula"].unique())
-
 
 # data is already checkd manually for weird things with the profile
 #profile = ProfileReport(df, title="data profile")
@@ -52,14 +89,16 @@ num_unique_formulae = len(X_train["formula"].unique())
 #unique_molecule = df["A1"].unique()
 #print(f'{len(unique_molecule)} unique formulae:\n{unique_molecule}')
 
+
+""" Splitting the data with one element as test """
 #val_element = "Ba"
-test_element = "La"
+#test_element = "La"
 
 # split the data so that the train data doens't contain any of the test element
 
 #df_val = df[df["formula"].str.contains(val_element)]
-df_test = df[df["formula"].str.contains(test_element)]
-df_train = df[df["formula"].str.contains(test_element)==False]
+#df_test = df[df["formula"].str.contains(test_element)]
+#df_train = df[df["formula"].str.contains(test_element)==False]
 
 
 #print(f'train dataset shape: {df_train.shape}')
@@ -67,6 +106,7 @@ df_train = df[df["formula"].str.contains(test_element)==False]
 #print(f'test dataset shape: {df_test.shape}\n')
 
 
+""" Saving data """
 # uncomment to save data again
 #train_path = directory + 'train_data.csv'
 #test_path = directory + 'test_data.csv'
