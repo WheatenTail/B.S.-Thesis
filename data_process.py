@@ -20,6 +20,8 @@ data_path = directory + '/perovskite_data.xlsx'
 df = pd.read_excel(data_path, sheet_name="DFT Calculated Dataset")
 
 
+
+#%%
 # rename some columns to have simpler names
 rename_dict = {"Material Composition": "formula",
                "A site #1": "A1",
@@ -33,43 +35,66 @@ rename_dict = {"Material Composition": "formula",
 
 df = df.rename(columns=rename_dict)
 
+#%%
 """ Splitting data how they did in the paper """
 
 first = ["Ba", "Ca"]
 
 second = ["Pr", "Dy", "Gd", "Ho"]
 
-thirdA = ["Ba", "Sr"]
-thirdB = ["Fe"]
+third = ["Ba", "Sr"]
 
 fourth = ["V", "Cr", "Ti", "Ga", "Sc"]
 
 fifth = ["Bi", "Cd", "Mg", "Ce", "Er"]
 
-
+#%% set 1: Ba or Ca on the A-site (also mixed both Ba-Ca)
 df_test1 = df[df["A1"].isin(first)]
 df_test1 = df_test1[df_test1["A2"].isin(first)]
+df_val1 = df[df["formula"].isin(df_test1["formula"])==False].sample(round(df.shape[0]*0.1), random_state=42) # take 10% of formulas randomly as validation data
+df_train1 = df[(df["formula"].isin(df_test1["formula"])==False) & (df["formula"].isin(df_val1["formula"])==False)]
 
+test1 = df_test1[["formula", "Ehull"]].copy()
+val1 = df_val1[["formula", "Ehull"]].copy()
+train1 = df_train1[["formula", "Ehull"]].copy()
+
+#%% set 2: only Pr, dy, Gd, Ho in the A site
 df_test2 = df[df["A1"].isin(second)]
 df_test2 = df_test2[df_test2["A2"].isin(second)]
+df_train2 = df[df["formula"].isin(df_test2["formula"])==False]
 
-df_test3A = df[df["B1"].isin(thirdB)]
-df_test3B = df[df["B2"].isin(thirdB)]
-df_test3C = df[df["B3"].isin(thirdB)]
-df_test3 = pd.concat([df_test3A, df_test3B, df_test3C])
-df_test3 = df_test3[df_test3["A1"].isin(thirdA)]
-df_test3 = df_test3[df_test3["A2"].isin(thirdA)]
+test2 = df_test2[["formula", "Ehull"]].copy()
+train2 = df_train2[["formula", "Ehull"]].copy()
 
+#%% set 3: only Ba AND Sr in A, and Fe in B (needs to have both acording to the size of the train data sets in the data paper)
+df_test3Fe = df[(df["B1"]=="Fe") | (df["B2"]=="Fe") | (df["B3"]=="Fe")] # all with Fe somewhere in B (1683 in excel has Fe in B1 and B2)
+df_test3 = df_test3Fe[ df_test3Fe["A1"].isin(third) & df_test3Fe["A2"].isin(third) & pd.isnull(df_test3Fe["A3"]) ] # all with Ba and Sr in A1 and A2
+df_train3 = df[df["formula"].isin(df_test3["formula"])==False]
+
+test3 = df_test3[["formula", "Ehull"]].copy()
+train3 = df_train3[["formula", "Ehull"]].copy()
+#df_test3 = df_test3Fe[ df_test3Fe["A1"].isin(third) & pd.isnull(df_test3Fe["A2"]) ]    # I would say this is how they describe it in the paper, but that makes too many test elements
+
+#%% set 4: only V, Cr, Ti, Ga, or Sc atoms in B1 and B2
 df_test4 = df[df["B1"].isin(fourth)]
 df_test4 = df_test4[df_test4["B2"].isin(fourth)]
+df_train4 = df[df["formula"].isin(df_test4["formula"])==False]
 
-df_test5 = df[df["A1"].isin(fifth)]
-df_test5 = df[df["A2"].isin(fifth)]
-df_test5 = df[df["A3"].isin(fifth)]
+test4 = df_test4[["formula", "Ehull"]].copy()
+train4 = df_train4[["formula", "Ehull"]].copy()
+#df_test4 = df[ (df["B1"].isin(fourth) & pd.isnull(df["B2"]) & pd.isnull(df["B3"]))    |
+           #    (df["B1"].isin(fourth) & df["B2"].isin(fourth) & pd.isnull(df["B3"]))  |
+              # (df["B1"].isin(fourth) & df["B2"].isin(fourth) & df["B3"].isin(fourth)) ]
 
-
+#%% set 5: one of the elements in the fifth list somewhere in the A spot
+df_test5 = df[ (df["A1"].isin(fifth) & ~(df["A2"].isin(fifth)) & ~(df["A3"].isin(fifth))) |
+               (~(df["A1"].isin(fifth)) & df["A2"].isin(fifth) & ~(df["A3"].isin(fifth))) |
+               (~(df["A1"].isin(fifth)) & ~(df["A2"].isin(fifth)) & df["A3"].isin(fifth))]
 df_train5 = df[df["formula"].isin(df_test5["formula"])==False]
 
+test5 = df_test5[["formula", "Ehull"]].copy()
+train5 = df_train5[["formula", "Ehull"]].copy()
+#%%
 """ Splitting the data randomly """
 # splitting with sklearn randomly might work since there are only unique formulas
 #X = df[['formula']]
@@ -90,34 +115,41 @@ df_train5 = df[df["formula"].isin(df_test5["formula"])==False]
 #print(f'{len(unique_molecule)} unique formulae:\n{unique_molecule}')
 
 
-""" Splitting the data with one element as test """
-#val_element = "Ba"
-#test_element = "La"
-
-# split the data so that the train data doens't contain any of the test element
-
-#df_val = df[df["formula"].str.contains(val_element)]
-#df_test = df[df["formula"].str.contains(test_element)]
-#df_train = df[df["formula"].str.contains(test_element)==False]
-
-
-#print(f'train dataset shape: {df_train.shape}')
-#print(f'validation dataset shape: {df_val.shape}')
-#print(f'test dataset shape: {df_test.shape}\n')
-
-
+#%%
 """ Saving data """
 # uncomment to save data again
-#train_path = directory + 'train_data.csv'
-#test_path = directory + 'test_data.csv'
-#df_train.to_csv(train_path, index=False)
-#df_test.to_csv(test_path, index=False)
+"""
+train_path1 = directory + '/train_data1.csv'
+test_path1 = directory + '/test_data1.csv'
+val_path1 = directory + '/val_data1.csv'
+train1.to_csv(train_path1, index=False, header=None)
+test1.to_csv(test_path1, index=False, header=None)
+val1.to_csv(val_path1, index=False, header=None)
 
+train_path2 = directory + '/train_data2.csv'
+test_path2 = directory + '/test_data2.csv'
+test2.to_csv(test_path2, index=False, header=None)
+train2.to_csv(train_path2, index=False, header=None)
 
+train_path3 = directory + '/train_data3.csv'
+test_path3 = directory + '/test_data3.csv'
+test3.to_csv(test_path3, index=False, header=None)
+train3.to_csv(train_path3, index=False, header=None)
+
+train_path4 = directory + '/train_data4.csv'
+test_path4 = directory + '/test_data4.csv'
+test4.to_csv(test_path4, index=False, header=None)
+train4.to_csv(train_path4, index=False, header=None)
+
+train_path5 = directory + '/train_data5.csv'
+test_path5 = directory + '/test_data5.csv'
+test5.to_csv(test_path5, index=False, header=None)
+train5.to_csv(train_path5, index=False, header=None)
+"""
 # make reports for test and train data
 #profile_test = ProfileReport(df_test, title="data profile")
 #profile_test.to_file("test_report.html")
 
 #profile_train = ProfileReport(df_train, title="data profile")
 #profile_train.to_file("train_report.html")
-
+print("done")
