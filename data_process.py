@@ -30,7 +30,7 @@ rename_dict = {"Material Composition": "formula",
                "B site #1": "B1",
                "B site #2": "B2",
                "B site #3": "B3",
-               "energy_above_hull (meV/atom)": "Ehull",
+               "energy_above_hull (meV/atom)": "target",
                "formation_energy (eV/atom)": "Eform"}
 
 df = df.rename(columns=rename_dict)
@@ -54,25 +54,25 @@ df_test1 = df_test1[df_test1["A2"].isin(first)]
 df_val1 = df[df["formula"].isin(df_test1["formula"])==False].sample(round(df.shape[0]*0.1), random_state=42) # take 10% of formulas randomly as validation data
 df_train1 = df[(df["formula"].isin(df_test1["formula"])==False) & (df["formula"].isin(df_val1["formula"])==False)]
 
-test1 = df_test1[["formula", "Ehull"]].copy()
-val1 = df_val1[["formula", "Ehull"]].copy()
-train1 = df_train1[["formula", "Ehull"]].copy()
+test1 = df_test1[["formula", "target"]].copy()
+val1 = df_val1[["formula", "target"]].copy()
+train1 = df_train1[["formula", "target"]].copy()
 
 #%% set 2: only Pr, dy, Gd, Ho in the A site
 df_test2 = df[df["A1"].isin(second)]
 df_test2 = df_test2[df_test2["A2"].isin(second)]
 df_train2 = df[df["formula"].isin(df_test2["formula"])==False]
 
-test2 = df_test2[["formula", "Ehull"]].copy()
-train2 = df_train2[["formula", "Ehull"]].copy()
+test2 = df_test2[["formula", "target"]].copy()
+train2 = df_train2[["formula", "target"]].copy()
 
 #%% set 3: only Ba AND Sr in A, and Fe in B (needs to have both acording to the size of the train data sets in the data paper)
 df_test3Fe = df[(df["B1"]=="Fe") | (df["B2"]=="Fe") | (df["B3"]=="Fe")] # all with Fe somewhere in B (1683 in excel has Fe in B1 and B2)
 df_test3 = df_test3Fe[ df_test3Fe["A1"].isin(third) & df_test3Fe["A2"].isin(third) & pd.isnull(df_test3Fe["A3"]) ] # all with Ba and Sr in A1 and A2
 df_train3 = df[df["formula"].isin(df_test3["formula"])==False]
 
-test3 = df_test3[["formula", "Ehull"]].copy()
-train3 = df_train3[["formula", "Ehull"]].copy()
+test3 = df_test3[["formula", "target"]].copy()
+train3 = df_train3[["formula", "target"]].copy()
 #df_test3 = df_test3Fe[ df_test3Fe["A1"].isin(third) & pd.isnull(df_test3Fe["A2"]) ]    # I would say this is how they describe it in the paper, but that makes too many test elements
 
 #%% set 4: only V, Cr, Ti, Ga, or Sc atoms in B1 and B2
@@ -80,8 +80,8 @@ df_test4 = df[df["B1"].isin(fourth)]
 df_test4 = df_test4[df_test4["B2"].isin(fourth)]
 df_train4 = df[df["formula"].isin(df_test4["formula"])==False]
 
-test4 = df_test4[["formula", "Ehull"]].copy()
-train4 = df_train4[["formula", "Ehull"]].copy()
+test4 = df_test4[["formula", "target"]].copy()
+train4 = df_train4[["formula", "target"]].copy()
 #df_test4 = df[ (df["B1"].isin(fourth) & pd.isnull(df["B2"]) & pd.isnull(df["B3"]))    |
            #    (df["B1"].isin(fourth) & df["B2"].isin(fourth) & pd.isnull(df["B3"]))  |
               # (df["B1"].isin(fourth) & df["B2"].isin(fourth) & df["B3"].isin(fourth)) ]
@@ -92,13 +92,13 @@ df_test5 = df[ (df["A1"].isin(fifth) & ~(df["A2"].isin(fifth)) & ~(df["A3"].isin
                (~(df["A1"].isin(fifth)) & ~(df["A2"].isin(fifth)) & df["A3"].isin(fifth))]
 df_train5 = df[df["formula"].isin(df_test5["formula"])==False]
 
-test5 = df_test5[["formula", "Ehull"]].copy()
-train5 = df_train5[["formula", "Ehull"]].copy()
+test5 = df_test5[["formula", "target"]].copy()
+train5 = df_train5[["formula", "target"]].copy()
 #%%
 """ Splitting the data randomly """
 # splitting with sklearn randomly might work since there are only unique formulas
 #X = df[['formula']]
-#y = df['Ehull']
+#y = df['target']
 #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=t_size, random_state=random_seed)
 
 #print("input\n")
@@ -118,14 +118,14 @@ train5 = df_train5[["formula", "Ehull"]].copy()
 #%%
 """ Saving data """
 # uncomment to save data again
-"""
+
 train_path1 = directory + '/train_data1.csv'
 test_path1 = directory + '/test_data1.csv'
 val_path1 = directory + '/val_data1.csv'
-train1.to_csv(train_path1, index=False, header=None)
-test1.to_csv(test_path1, index=False, header=None)
-val1.to_csv(val_path1, index=False, header=None)
-
+train1.to_csv(train_path1, index=False)
+test1.to_csv(test_path1, index=False)
+val1.to_csv(val_path1, index=False)
+"""
 train_path2 = directory + '/train_data2.csv'
 test_path2 = directory + '/test_data2.csv'
 test2.to_csv(test_path2, index=False, header=None)
