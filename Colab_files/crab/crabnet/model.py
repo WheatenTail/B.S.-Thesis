@@ -209,7 +209,7 @@ class Model():
         self.lr_list = []
         self.xswa = []
         self.yswa = []
-        self.discard_n = 3
+        self.discard_n = 10 # this was changed by christer, was 3
 
         for epoch in range(epochs):
             self.epoch = epoch
