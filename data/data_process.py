@@ -52,7 +52,8 @@ fifth = ["Bi", "Cd", "Mg", "Ce", "Er"]
 df_test1 = df[df["A1"].isin(first)]
 df_test1 = df_test1[df_test1["A2"].isin(first)]
 df_val1 = df[df["formula"].isin(df_test1["formula"])==False].sample(round(df.shape[0]*0.1), random_state=42) # take 10% of formulas randomly as validation data
-df_train1 = df[(df["formula"].isin(df_test1["formula"])==False) & (df["formula"].isin(df_val1["formula"])==False)]
+df_train1 = df[(df["formula"].isin(df_test1["formula"])==False)]
+df_train1 = df_train1[(df_train1["formula"].isin(df_val1["formula"])==False)]  
 
 test1 = df_test1[["formula", "target"]].copy()
 val1 = df_val1[["formula", "target"]].copy()
@@ -63,6 +64,7 @@ df_test2 = df[df["A1"].isin(second)]
 df_test2 = df_test2[df_test2["A2"].isin(second)]
 df_val2 = df[df["formula"].isin(df_test2["formula"])==False].sample(round(df.shape[0]*0.1), random_state=42)
 df_train2 = df[df["formula"].isin(df_test2["formula"])==False & (df["formula"].isin(df_val2["formula"])==False)]
+df_train2 = df_train2[(df_train2["formula"].isin(df_val2["formula"])==False)]  
 
 test2 = df_test2[["formula", "target"]].copy()
 val2 = df_val2[["formula", "target"]].copy()
@@ -73,6 +75,7 @@ df_test3Fe = df[(df["B1"]=="Fe") | (df["B2"]=="Fe") | (df["B3"]=="Fe")] # all wi
 df_test3 = df_test3Fe[ df_test3Fe["A1"].isin(third) & df_test3Fe["A2"].isin(third) & pd.isnull(df_test3Fe["A3"]) ] # all with Ba and Sr in A1 and A2
 df_val3 = df[df["formula"].isin(df_test3["formula"])==False].sample(round(df.shape[0]*0.1), random_state=42)
 df_train3 = df[df["formula"].isin(df_test3["formula"])==False & (df["formula"].isin(df_val3["formula"])==False)]
+df_train3 = df_train3[(df_train3["formula"].isin(df_val3["formula"])==False)] 
 
 test3 = df_test3[["formula", "target"]].copy()
 val3 = df_val3[["formula", "target"]].copy()
@@ -84,6 +87,7 @@ df_test4 = df[df["B1"].isin(fourth)]
 df_test4 = df_test4[df_test4["B2"].isin(fourth)]
 df_val4 = df[df["formula"].isin(df_test4["formula"])==False].sample(round(df.shape[0]*0.1), random_state=42)
 df_train4 = df[df["formula"].isin(df_test4["formula"])==False & (df["formula"].isin(df_val4["formula"])==False)]
+df_train4 = df_train4[(df_train4["formula"].isin(df_val4["formula"])==False)] 
 
 test4 = df_test4[["formula", "target"]].copy()
 val4 = df_val4[["formula", "target"]].copy()
@@ -97,6 +101,7 @@ df_test5 = df[ (df["A1"].isin(fifth) & ~(df["A2"].isin(fifth)) & ~(df["A3"].isin
                
 df_val5 = df[df["formula"].isin(df_test5["formula"])==False].sample(round(df.shape[0]*0.1), random_state=42)
 df_train5 = df[df["formula"].isin(df_test5["formula"])==False & (df["formula"].isin(df_val5["formula"])==False)]
+df_train5 = df_train5[(df_train5["formula"].isin(df_val5["formula"])==False)] 
 
 test5 = df_test5[["formula", "target"]].copy()
 val5 = df_val5[["formula", "target"]].copy()
