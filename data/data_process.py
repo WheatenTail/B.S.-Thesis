@@ -117,16 +117,12 @@ df_train6 = df.drop(df_test6.index).drop(df_val6.index)
 test6 = df_test6[["formula", "target"]].copy()
 val6 = df_val6[["formula", "target"]].copy()
 train6 = df_train6[["formula", "target"]].copy()
+#%% profiling of the data
 
-#print("input\n")
-#print(X_train.head(10))
-#print("\noutput\n")
-#print(y_train.head(10))
-
-# data is already checkd manually for weird things with the profile
+# data is already checked manually for weird things with the profile
 #profile = ProfileReport(df, title="data profile")
 #profile.to_file("report.html")
-
+"""
 profileTest1 = ProfileReport(df_test1, title="test 1")
 profileTrain1 = ProfileReport(df_train1, title="train 1")
 profileTest1.to_file("test1.html")
@@ -161,7 +157,7 @@ profileTrain6.to_file("train6.html")
 # get unique element in first spot of molecule
 #unique_molecule = df["A1"].unique()
 #print(f'{len(unique_molecule)} unique formulae:\n{unique_molecule}')
-
+"""
 
 #%%
 """ Saving data """
