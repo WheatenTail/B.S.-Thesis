@@ -1,3 +1,0 @@
-train: 4.6
-val: 12.9
-test mae: 34
