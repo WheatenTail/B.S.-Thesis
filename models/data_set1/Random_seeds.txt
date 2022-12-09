@@ -1,15 +1,17 @@
-The random seeds used for training five models on the random data set
-the variable "RNG_SEED" was changed to be the same in files:
+The random seeds used for training five models on the random data set.
+
+
+The variable "RNG_SEED" was changed to be the same in files:
 train_crabnet.py, kingcrab.py, model.py, optim.py, and utils.py
 
-seeds:
+seeds for models:
 1) 482175688
 2) 325132636
 3) 607646308
 4) 562109944
 5) 154899066
 
-The numbers were generated with the following python code:
+They were generated using the following python code:
 """
 import secrets
 print (secrets.randbelow(1_000_000_000))
