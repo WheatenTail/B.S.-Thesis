@@ -1,5 +1,5 @@
 # B.S.-Thesis
-Directory for files used or otherwise necessary for the bachelor's thesis
+Directory for files used or otherwise necessary for my bachelor's thesis
 
 ## Folders
 - crabnet_reproduction
