@@ -1,5 +1,5 @@
 # B.S.-Thesis
-Directory for files used or otherwise necessary for my bachelor's thesis
+Directory for files used or otherwise necessary for my bachelor's thesis: [Using deep learning with transformer networks to assess the stability of perovskite oxides.](https://aaltodoc.aalto.fi/handle/123456789/119503)
 
 ## Folders
 - crabnet_reproduction
